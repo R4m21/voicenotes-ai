@@ -44,7 +44,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = await user.generateAuthToken();
+    const token = user.generateAuthToken();
 
     res.cookie("token", token, {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),

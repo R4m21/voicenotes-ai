@@ -3,12 +3,12 @@ const { userAuth } = require("../middlewares/auth");
 const router = require("express").Router();
 
 // CREATE
-router.post("/", createNote);
+router.post("/", userAuth, createNote);
 
 // GET ALL
 router.get("/", userAuth, getNotes);
 
 // DELETE
-router.delete("/:id", deleteNote);
+router.delete("/:id", userAuth, deleteNote);
 
 module.exports = router;

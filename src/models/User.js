@@ -2,40 +2,51 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const UserSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
+const UserSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, "First name is required"],
+      trim: true,
+      minLength: 2,
+    },
+    lastName: {
+      type: String,
+      required: [true, "Last name is required"],
+      trim: true,
+    },
+    emailId: {
+      type: String,
+      required: [true, "Email is required"],
+      lowercase: true,
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  emailId: {
-    type: String,
-    required: true,
-    lowercase: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  { timestamps: true },
+);
 
+// Password Hashing
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.methods.matchPassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+// Password Comparison
+UserSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
-UserSchema.methods.generateAuthToken = async function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
-  return token;
+// Token Generation
+UserSchema.methods.generateAuthToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
 module.exports = mongoose.model("User", UserSchema);

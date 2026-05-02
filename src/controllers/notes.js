@@ -6,6 +6,7 @@ const createNote = async (req, res) => {
 
     const note = await Note.create({
       title,
+      userId: req.user._id,
       transcription,
       summary,
       actionItems,
@@ -22,7 +23,9 @@ const createNote = async (req, res) => {
 
 const getNotes = async (req, res) => {
   try {
-    const notes = await Note.find().sort({ createdAt: -1 });
+    const notes = await Note.find({ userId: req.user._id }).sort({
+      createdAt: -1,
+    });
     res.json(notes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -31,8 +34,18 @@ const getNotes = async (req, res) => {
 
 const deleteNote = async (req, res) => {
   try {
-    await Note.findByIdAndDelete(req.params.id);
-    res.json({ message: "Note deleted" });
+    const deletedNote = await Note.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!deletedNote) {
+      return res
+        .status(404)
+        .json({ message: "Note not found or unauthorized" });
+    }
+
+    res.json({ message: "Note deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
