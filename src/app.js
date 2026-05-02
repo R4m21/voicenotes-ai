@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const routerNotes = require("./routes/notes");
+const routerAi = require("./routes/ai");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -9,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/notes", require("./routes/notes"));
-app.use("/api/ai", require("./routes/ai"));
+app.use("/api/notes", routerNotes);
+app.use("/api/ai", routerAi);
 
 module.exports = app;

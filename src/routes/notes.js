@@ -1,22 +1,13 @@
+const { createNote, getNotes, deleteNote } = require("../controllers/notes");
 const router = require("express").Router();
-const Note = require("../models/Note");
 
 // CREATE
-router.post("/", async (req, res) => {
-  const note = await Note.create(req.body);
-  res.json(note);
-});
+router.post("/", createNote);
 
 // GET ALL
-router.get("/", async (req, res) => {
-  const notes = await Note.find().sort({ createdAt: -1 });
-  res.json(notes);
-});
+router.get("/", getNotes);
 
 // DELETE
-router.delete("/:id", async (req, res) => {
-  await Note.findByIdAndDelete(req.params.id);
-  res.json({ success: true });
-});
+router.delete("/:id", deleteNote);
 
 module.exports = router;
