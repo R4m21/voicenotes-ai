@@ -60,4 +60,15 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login, register };
+const logout = (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+    });
+    res.json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { register, login, logout };
