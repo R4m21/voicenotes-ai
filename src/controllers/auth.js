@@ -18,6 +18,15 @@ const register = async (req, res) => {
 
     await user.save();
 
+    const token = user.generateAuthToken();
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+
     return res.status(201).json({
       message: `Hello ${firstName}, your account has been created successfully`,
       data: user,
@@ -49,6 +58,8 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       httpOnly: true,
+      sameSite: "none",
+      secure: true,
     });
 
     return res.status(200).json({
@@ -64,6 +75,8 @@ const logout = (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
+      sameSite: "none",
+      secure: true,
     });
     res.json({ message: "Logout successful" });
   } catch (error) {
