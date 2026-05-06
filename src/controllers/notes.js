@@ -55,13 +55,12 @@ const deleteNote = async (req, res) => {
 
 // 🆕 NEW: Voice → AI → Save
 const createNoteFromAudio = async (req, res) => {
-  
   const file = req.file;
-  
+
   if (!file) {
     return res.status(400).json({ message: "Audio file is required" });
   }
-  
+
   const filePath = file.path;
 
   // 🎤 Step 1: Transcription
@@ -72,7 +71,7 @@ const createNoteFromAudio = async (req, res) => {
 
   // 💾 Step 3: Save to DB
   const note = await Note.create({
-    title: "Voice Note",
+    title: aiData.title,
     userId: req.user._id,
     transcription,
     summary: aiData.summary,

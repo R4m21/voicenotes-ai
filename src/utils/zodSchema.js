@@ -21,12 +21,14 @@ const actionItemsSchema = z.object({
 
 const aiResponseSchema = z
   .object({
+    title: z.string().optional(),
     summary: z.string().optional(),
     actionItems: z.array(actionItemsSchema).optional(),
     keywords: z.array(z.string()).optional(),
   })
   .transform((data) => {
     return {
+      title: data.title || "",
       summary: data.summary || "",
       actionItems: (data.actionItems || []).map((item) => ({
         text: item?.text?.trim() || "",

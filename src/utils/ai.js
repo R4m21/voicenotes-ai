@@ -18,9 +18,10 @@ const analyzeText = async (text) => {
 
       return JSON strictly in this format:
       {
+        "title": "...",
         "summary": "...,
         "actionItems": [{"text": "...", "priority": "High|Medium|Low]"}],
-        "keywords"
+        "keywords: ["..."]
       }
       Do not include any extra text.
       `,
@@ -29,13 +30,13 @@ const analyzeText = async (text) => {
 
     const data = await res.json();
     const parsed = JSON.parse(data.response);
-    // console.log({ text });
-    // console.log(JSON.parse(data.response));
+    console.log({ text });
+    console.log(JSON.parse(data.response));
 
-    // 🔥 ZOD VALIDATION + SANITIZATION
+    // ZOD VALIDATION + SANITIZATION
     const cleanData = aiResponseSchema.parse(parsed);
 
-    // console.log({ cleanData });
+    console.log({ cleanData });
 
     return cleanData;
   } catch (error) {
