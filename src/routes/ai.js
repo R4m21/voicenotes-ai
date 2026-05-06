@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { createNoteFromAudio } = require("../controllers/notes");
+const { streamTranscription } = require("../controllers/ai");
 const { userAuth } = require("../middlewares/auth");
 const multer = require("multer");
 
@@ -9,7 +9,7 @@ router.post(
   "/transcribe",
   userAuth,
   upload.single("audio"),
-  createNoteFromAudio,
+  streamTranscription,
 );
 
 module.exports = router;
