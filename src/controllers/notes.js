@@ -63,7 +63,6 @@ const createNoteFromAudio = async (req, res) => {
   }
   
   const filePath = file.path;
-  console.log("...", filePath);
 
   // 🎤 Step 1: Transcription
   const transcription = await transcribeAudio(filePath);

@@ -12,4 +12,30 @@ const loginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-module.exports = { registerSchema, loginSchema };
+const VALID_PRIORITIES = ["High", "Medium", "Low"];
+
+const actionItemsSchema = z.object({
+  text: z.string(),
+  priority: z.enum(VALID_PRIORITIES),
+});
+
+const aiResponseSchema = z
+  .object({
+    summary: z.string().optional(),
+    actionItems: z.array(actionItemsSchema).optional(),
+    keywords: z.array(z.string()).optional(),
+  })
+  .transform((data) => {
+    return {
+      summary: data.summary || "",
+      actionItems: (data.actionItems || []).map((item) => ({
+        text: item?.text?.trim() || "",
+        priority: VALID_PRIORITIES.includes(item.priority)
+          ? item.priority
+          : "Low",
+      })),
+      keywords: (data.keywords || []).filter(Boolean),
+    };
+  });
+
+module.exports = { registerSchema, loginSchema, aiResponseSchema };
