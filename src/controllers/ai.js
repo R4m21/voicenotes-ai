@@ -20,7 +20,7 @@ const streamTranscription = async (req, res) => {
     // 🔥 Stream character by character
     for (let char of transcription) {
       res.write(char);
-      await new Promise((r) => setTimeout(() => r, 10)); // typing effect
+    //   await new Promise((r) => setTimeout(r, 10)); // typing effect
     }
     res.end();
   } catch (error) {
