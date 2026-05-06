@@ -1,31 +1,15 @@
 const router = require("express").Router();
+const { createNoteFromAudio } = require("../controllers/notes");
+const { userAuth } = require("../middlewares/auth");
+const multer = require("multer");
 
-// SIMPLE AI PROCESSOR
-router.post("/process", (req, res) => {
-  const { text } = req.body;
+const upload = multer({ dest: "uploads/" });
 
-  const summary = text.slice(0, 120);
-
-  const actionItems = text
-    .split(".")
-    .filter(
-      (t) => t.includes("karna") || t.includes("todo") || t.includes("fix"),
-    )
-    .map((t) => ({
-      text: t.trim(),
-      priority: "Medium",
-    }));
-
-  const keywords = text
-    .toLowerCase()
-    .split(" ")
-    .filter((w) => ["bug", "meeting", "fix", "call", "update"].includes(w));
-
-  res.json({
-    summary,
-    actionItems,
-    keywords,
-  });
-});
+router.post(
+  "/transcribe",
+  userAuth,
+  upload.single("audio"),
+  createNoteFromAudio,
+);
 
 module.exports = router;

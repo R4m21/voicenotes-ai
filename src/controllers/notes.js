@@ -1,4 +1,6 @@
 const Note = require("../models/Note");
+const { analyzeText } = require("../utils/ai");
+const { transcribeAudio } = require("../utils/transcribe");
 
 const createNote = async (req, res) => {
   try {
@@ -51,4 +53,41 @@ const deleteNote = async (req, res) => {
   }
 };
 
-module.exports = { createNote, getNotes, deleteNote };
+// 🆕 NEW: Voice → AI → Save
+const createNoteFromAudio = async (req, res) => {
+  
+  const file = req.file;
+  
+  if (!file) {
+    return res.status(400).json({ message: "Audio file is required" });
+  }
+  
+  const filePath = file.path;
+  console.log("...", filePath);
+
+  // 🎤 Step 1: Transcription
+  const transcription = await transcribeAudio(filePath);
+
+  // 🧠 Step 2: AI Analysis
+  const aiData = await analyzeText(transcription);
+
+  // 💾 Step 3: Save to DB
+  const note = await Note.create({
+    title: "Voice Note",
+    userId: req.user._id,
+    transcription,
+    summary: aiData.summary,
+    actionItems: aiData.actionItems,
+    keywords: aiData.keywords,
+  });
+
+  // await note.save();
+  try {
+    res.status(201).json(note);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to process audio" });
+  }
+};
+
+module.exports = { createNote, getNotes, deleteNote, createNoteFromAudio };
