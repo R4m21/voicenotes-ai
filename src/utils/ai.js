@@ -20,7 +20,7 @@ const analyzeText = async (text) => {
       {
         "title": "...",
         "summary": "...,
-        "actionItems": [{"text": "...", "priority": "High|Medium|Low]"}],
+        "actionItems": [{"id": "...", "text": "...", "priority": "High|Medium|Low]"}],
         "keywords: ["..."]
       }
       Do not include any extra text.

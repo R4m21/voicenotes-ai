@@ -15,6 +15,7 @@ const loginSchema = z.object({
 const VALID_PRIORITIES = ["High", "Medium", "Low"];
 
 const actionItemsSchema = z.object({
+  id: z.string(),
   text: z.string(),
   priority: z.enum(VALID_PRIORITIES),
 });
@@ -31,6 +32,7 @@ const aiResponseSchema = z
       title: data.title || "",
       summary: data.summary || "",
       actionItems: (data.actionItems || []).map((item) => ({
+        id: item?.id?.trim() || "",
         text: item?.text?.trim() || "",
         priority: VALID_PRIORITIES.includes(item.priority)
           ? item.priority

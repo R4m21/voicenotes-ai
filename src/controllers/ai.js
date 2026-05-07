@@ -1,3 +1,4 @@
+const { analyzeText } = require("../utils/ai");
 const { transcribeAudio } = require("../utils/transcribe");
 
 const streamTranscription = async (req, res) => {
@@ -20,7 +21,7 @@ const streamTranscription = async (req, res) => {
     // 🔥 Stream character by character
     for (let char of transcription) {
       res.write(char);
-    //   await new Promise((r) => setTimeout(r, 10)); // typing effect
+      //   await new Promise((r) => setTimeout(r, 10)); // typing effect
     }
     res.end();
   } catch (error) {
@@ -29,4 +30,14 @@ const streamTranscription = async (req, res) => {
   }
 };
 
-module.exports = { streamTranscription };
+const aiAnalyzeText = async (req, res) => {
+  try {
+    const { text } = req.body;
+    const aiData = await analyzeText(text);
+    return res.json(aiData);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { streamTranscription, aiAnalyzeText };

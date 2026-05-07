@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { streamTranscription } = require("../controllers/ai");
+const { streamTranscription, aiAnalyzeText } = require("../controllers/ai");
 const { userAuth } = require("../middlewares/auth");
 const multer = require("multer");
 
@@ -11,5 +11,7 @@ router.post(
   upload.single("audio"),
   streamTranscription,
 );
+
+router.post("/analyze", userAuth, aiAnalyzeText);
 
 module.exports = router;
